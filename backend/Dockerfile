@@ -1,4 +1,4 @@
-# Dockerfile for EcoTwin Backend + Python CV Engine
+# Dockerfile for ReBin Backend + Python CV Engine
 # Single-container image for AWS ECS Fargate deployment
 # Build context: repository root (hackatthon/)
 
@@ -36,20 +36,22 @@ RUN npm ci --no-audit --no-fund
 # ---------------------------------------------------------------
 # Stage 3: Python dependencies (CV engine runtime only)
 # ---------------------------------------------------------------
-# Install the core Python packages required by waste-cv-engine.
-# We install from pyproject.toml dependencies (targeted set) rather
-# than the full requirements.txt which includes GPU-specific packages
-# (nvidia-ml-py, etc.) that are not needed on CPU-only Fargate.
-RUN pip3 install --no-cache-dir --upgrade pip setuptools wheel && \
-    pip3 install --no-cache-dir \
+# Create a virtual environment to avoid PEP 668 externally-managed
+# environment restrictions on Debian 12. Install only the core
+# Python packages required by ReBin CV engine (CPU-only).
+RUN python3 -m venv /opt/venv && \
+    /opt/venv/bin/pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    /opt/venv/bin/pip install --no-cache-dir \
     "ultralytics>=8.4.0" \
     "torch>=2.14.0" \
     "torchvision>=0.29.0" \
-    "opencv-python>=5.0.0" \
-    "numpy>=2.5.0" \
+    "opencv-python>=4.8.0,<5.0" \
     "pillow>=12.0.0" \
     "pydantic>=2.14.0" \
     "pyyaml>=6.0.0"
+
+# Make venv Python available on PATH
+ENV PATH="/opt/venv/bin:$PATH"
 
 # ---------------------------------------------------------------
 # Stage 4: Application source code
@@ -84,6 +86,8 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 # Point the CV engine at the container-resident model and source tree
 ENV WASTE_CV_MODEL_PATH=/app/waste-cv-engine/models/yolo26n.pt
+# Point to the Python virtual environment (created in Stage 3)
+ENV WASTE_CV_PYTHON_PATH=/opt/venv/bin/python3
 ENV APP_PROJECT_ROOT=/app
 # Python engine output directories (container-local, non-persistent)
 ENV WASTE_CV_CAPTURED_IMAGES_DIR=/app/waste-cv-engine/captured_images

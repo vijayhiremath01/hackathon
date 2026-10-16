@@ -1,4 +1,4 @@
-# waste-cv-engine
+# ReBin
 
 Local waste object detection engine using Python, YOLO, and OpenCV. Captures images from a webcam, runs object detection, and saves structured JSON records with integrity hashes.
 

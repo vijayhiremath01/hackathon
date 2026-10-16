@@ -1,12 +1,12 @@
 [project]
-name = "waste-cv-engine"
+name = "rebin"
 version = "0.1.0"
 description = "Local waste object detection engine using YOLO and OpenCV"
 readme = "README.md"
 requires-python = ">=3.13"
 license = {text = "MIT"}
 authors = [
-    {name = "waste-cv-engine contributors"}
+    {name = "rebin contributors"}
 ]
 dependencies = [
     "ultralytics>=8.4.0",

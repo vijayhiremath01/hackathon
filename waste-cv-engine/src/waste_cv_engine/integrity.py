@@ -1,4 +1,4 @@
-"""Image integrity and security module for waste-cv-engine."""
+"""Image integrity and security module for rebin."""
 
 import hashlib
 import logging

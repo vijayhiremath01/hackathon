@@ -50,7 +50,7 @@ def setup_logging(to_stderr: bool = True) -> None:
 def print_banner() -> None:
     """Print application banner to stderr (not stdout)."""
     print("\n" + "=" * 60, file=sys.stderr)
-    print("  waste-cv-engine  |  Local Waste Object Detection", file=sys.stderr)
+    print("  ReBin  |  Local Waste Object Detection", file=sys.stderr)
     print("=" * 60, file=sys.stderr)
     print(f"  Model: {CONFIG.model_path.name}", file=sys.stderr)
     print(f"  Camera: Index {CONFIG.camera_index}", file=sys.stderr)
@@ -273,7 +273,7 @@ def run_webcam_mode() -> None:
 def main() -> int:
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description="waste-cv-engine: Local waste object detection using YOLO."
+        description="rebin: Local waste object detection using YOLO."
     )
     parser.add_argument(
         "--image",

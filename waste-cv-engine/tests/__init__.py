@@ -1,1 +1,1 @@
-"""Test package for waste-cv-engine."""
+"""Test package for rebin."""

@@ -1,4 +1,4 @@
-# Docker Compose for EcoTwin Backend (local development/testing only)
+# Docker Compose for ReBin Backend (local development/testing only)
 # Does NOT include frontend or PostgreSQL (Neon is external).
 #
 # Usage:
@@ -11,9 +11,9 @@
 services:
   backend:
     build:
-      context: ..
+      context: .
       dockerfile: backend/Dockerfile
-    container_name: eco-twin-backend
+    container_name: rebin-backend
     restart: unless-stopped
     ports:
       - "3000:3000"

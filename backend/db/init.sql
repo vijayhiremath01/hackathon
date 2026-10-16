@@ -1,4 +1,4 @@
--- Initialize the waste-cv-engine backend database
+-- Initialize the ReBin backend database
 -- Run with: psql "$POSTGRES_URL" -f db/init.sql
 
 -- Create bins table (idempotent)

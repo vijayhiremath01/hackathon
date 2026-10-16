@@ -58,7 +58,7 @@ export default function BinDashboard({ binId: raw }: { binId: string }) {
   const [interpretBusy, setInterpretBusy] = useState(false);
   const [interpretError, setInterpretError] = useState('');
   const counts = useMemo(() => Object.entries(stats?.detections_by_label || {}).sort((a, b) => b[1] - a[1]), [stats]);
-  const storageKey = `ecotwin-ai-conversation:${id}`;
+  const storageKey = `rebin-ai-conversation:${id}`;
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -174,11 +174,11 @@ export default function BinDashboard({ binId: raw }: { binId: string }) {
         <InterpretationPanel scanId={latestScanId} interpretation={interpretation} busy={interpretBusy} error={interpretError} onInterpret={() => void runInterpretation()}/>
         <div className="last-scan"><span>Latest scan</span><strong>{dateLabel(details?.last_scan_at)}</strong></div>
       </>}
-      <footer className="panel-footer"><span className="connection-text"><i/>{backend === 'connected' ? 'Connected to campus backend' : 'Waiting for backend'}</span><span>EcoTwin <b>·</b> {id}</span></footer>
+      <footer className="panel-footer"><span className="connection-text"><i/>{backend === 'connected' ? 'Connected to campus backend' : 'Waiting for backend'}</span><span>ReBin <b>·</b> {id}</span></footer>
     </aside>
 
     <button className="assistant-fab" onClick={() => setAssistant(value => !value)} aria-label={assistant ? 'Close recycling assistant' : 'Open recycling assistant'}>{assistant ? <X size={21}/> : <MessageCircle size={21}/>}</button>
-    {assistant && <section className="assistant-panel"><header><span className="assistant-avatar"><Leaf size={16}/></span><div><strong>EcoTwin AI</strong><small>Database-aware recycling guide</small></div><button className="new-chat-button" onClick={() => void startConversation(true)} title="Start a new conversation" aria-label="Start a new conversation"><Plus size={16}/></button><button onClick={() => setAssistant(false)} aria-label="Close assistant"><X size={17}/></button></header>
+    {assistant && <section className="assistant-panel"><header><span className="assistant-avatar"><Leaf size={16}/></span><div><strong>ReBin AI</strong><small>Database-aware recycling guide</small></div><button className="new-chat-button" onClick={() => void startConversation(true)} title="Start a new conversation" aria-label="Start a new conversation"><Plus size={16}/></button><button onClick={() => setAssistant(false)} aria-label="Close assistant"><X size={17}/></button></header>
       <div className="chat-log">{conversationLoading ? <div className="chat-loading"><span className="loading-ring"/>Loading saved conversation…</div> : chatMessages.length === 0 ? <div className="chat-welcome">Ask about {info.name} scan history, detections, or recycling guidance. Answers use current database context.</div> : chatMessages.map((item, index) => <div className={`chat-entry ${item.role}`} key={item.id || index}><div className={`chat-bubble ${item.role}`}>{item.content}</div>{item.sources?.length ? <small className="chat-sources">Sources: {item.sources.slice(0, 3).map(source => source.scan_id.slice(0, 8)).join(', ')}</small> : null}</div>)}
         {chatBusy && <div className="chat-bubble assistant typing">Checking this bin’s records…</div>}{chatError && <div className="chat-error" role="alert">{chatError}</div>}
       </div>

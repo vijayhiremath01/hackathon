@@ -1,4 +1,4 @@
-"""Camera capture module for waste-cv-engine."""
+"""Camera capture module for rebin."""
 
 import cv2
 import logging

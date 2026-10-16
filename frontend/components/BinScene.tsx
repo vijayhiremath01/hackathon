@@ -15,7 +15,7 @@ function SmartBinModel({id,capacity,stale}:{id:BinId;capacity:BinCapacity|null;s
  <mesh position={[0,2.78,0]}><boxGeometry args={[.44,.018,.5]}/><meshStandardMaterial color="#070f0d"/></mesh>
  {/* front inset panel */}<mesh position={[0,1.55,.635]}><boxGeometry args={[.9,.82,.045]}/><meshStandardMaterial color="#263d37" metalness={.25} roughness={.4}/></mesh>
  <mesh position={[0,1.68,.67]}><planeGeometry args={[.68,.48]}/><meshStandardMaterial color="#15302a" emissive="#163a31" emissiveIntensity={.32}/></mesh>
- <Text position={[0,1.77,.697]} fontSize={.095} color="#a7e4c1" anchorX="center" anchorY="middle">ECOTWIN • SMART BIN</Text>
+ <Text position={[0,1.77,.697]} fontSize={.095} color="#a7e4c1" anchorX="center" anchorY="middle">REBIN • SMART BIN</Text>
  <Text position={[0,1.59,.698]} fontSize={.12} color="white" anchorX="center" anchorY="middle">{id.toUpperCase()} · {capacity?`${Math.round(capacity.capacity_percentage)}%`:'—'}</Text>
  <Text position={[0,1.48,.698]} fontSize={.05} color="#a7e4c1" anchorX="center" anchorY="middle">{capacity?`${capacity.current_fill_liters.toFixed(1)}/${capacity.capacity_liters.toFixed(0)} L · ${stale?'STALE':capacity.status}`:'CAPACITY UNAVAILABLE'}</Text>
  <mesh position={[0,1.31,.698]}><sphereGeometry args={[.055,20,16]}/><meshStandardMaterial color="#7ee1a8" emissive="#49d98b" emissiveIntensity={2.2}/></mesh>

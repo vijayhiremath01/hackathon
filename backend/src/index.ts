@@ -42,7 +42,7 @@ const upload = multer({
 
 // Routes
 app.get('/api/health', (_req, res) => {
-  res.status(200).json({ success: true, status: 'ok', service: 'waste-cv-backend' });
+  res.status(200).json({ success: true, status: 'ok', service: 'rebin-backend' });
 });
 
 // Bin endpoints

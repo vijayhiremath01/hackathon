@@ -1,27 +1,35 @@
-# .dockerignore for EcoTwin Backend + Python CV Engine
+# .dockerignore for ReBin Backend + Python CV Engine
 # Build context: repository root (hackatthon/)
+# Dockerfile: backend/Dockerfile (COPYs backend/, waste-cv-engine/, models/)
 
-# Version control
+# --- Version control (not needed in image) ---
 .git/
 .gitignore
 
-# Secrets and environment
+# --- Secrets and environment (never bake real credentials into image) ---
 .env
 .env.local
-.env.local.example
 *.env
 **/.env
+# Allow safe template files:
+!.env.example
+!.env.local.example
 
-# Frontend (deployed separately - do not include)
+# --- Frontend (deployed separately - do not include in backend image) ---
 frontend/
 
-# Node.js
+# --- Unrelated local projects (if present) ---
+compression-frontend/
+
+# --- Node.js ---
 node_modules/
+.npm/
+.yarn/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Python virtual environments and caches
+# --- Python virtual environments and caches ---
 **/.venv/
 **/venv/
 **/env/
@@ -30,12 +38,12 @@ yarn-error.log*
 **/*.pyc
 **/*.pyo
 
-# Build output
+# --- Build output (regenerated, not needed in image) ---
 **/dist/
 **/build/
 **/*.tsbuildinfo
 
-# Runtime output directories (created at runtime, not baked into image)
+# --- Runtime output directories (created at runtime by the app) ---
 **/captured_images/
 **/scan_records/
 **/detection_previews/
@@ -43,23 +51,30 @@ yarn-error.log*
 **/temp/
 **/uploads/
 
-# macOS
+# --- macOS ---
 .DS_Store
 **/.DS_Store
 
-# Logs
+# --- Logs ---
 *.log
-npm-debug.log*
 
-# TypeScript
-*.tsbuildinfo
-
-# IDE
+# --- IDE ---
 .idea/
 .vscode/
 *.swp
 *.swo
+*~
 
-# Misc
+# --- Coverage ---
 coverage/
 .nyc_output/
+
+# =============================================================================
+# NOT excluded (intentionally included in Docker image):
+# - backend/          : Express + TypeScript application source
+# - waste-cv-engine/  : Python CV engine source (main.py, src/)
+# - models/           : YOLO model weights (yolo26n.pt, required at runtime)
+# - backend/Dockerfile: This Dockerfile
+# - docker-compose.yml: Compose configuration
+# - .env.example      : Safe environment template (no secrets)
+# =============================================================================

@@ -1,4 +1,4 @@
-"""YOLO detection module for waste-cv-engine."""
+"""YOLO detection module for rebin."""
 
 import logging
 from pathlib import Path

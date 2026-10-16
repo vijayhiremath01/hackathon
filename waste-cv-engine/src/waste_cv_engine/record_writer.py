@@ -1,4 +1,4 @@
-"""JSON record writer module for waste-cv-engine."""
+"""JSON record writer module for rebin."""
 
 import json
 import logging

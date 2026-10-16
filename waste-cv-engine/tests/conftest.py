@@ -1,4 +1,4 @@
-"""Pytest configuration for waste-cv-engine tests."""
+"""Pytest configuration for rebin tests."""
 
 import sys
 from pathlib import Path

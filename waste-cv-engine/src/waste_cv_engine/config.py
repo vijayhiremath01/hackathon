@@ -1,4 +1,4 @@
-"""Configuration settings for waste-cv-engine."""
+"""Configuration settings for rebin."""
 
 import os
 from pathlib import Path

@@ -23,8 +23,8 @@ const __dirname = path.dirname(__filename);
 const PROJECT_ROOT = process.env.APP_PROJECT_ROOT ||
   path.resolve(__dirname, '..', '..', '..');
 
-// In containers, Python is available on PATH as `python3`. Locally, a
-// venv may exist; prefer it when present.
+// Python executable: prefer explicit env var, then local venv, then PATH.
+const ENV_PYTHON = process.env.WASTE_CV_PYTHON_PATH;
 const LOCAL_PYTHON = path.join(
   PROJECT_ROOT,
   'waste-cv-engine',
@@ -32,7 +32,8 @@ const LOCAL_PYTHON = path.join(
   'bin',
   'python'
 );
-const PYTHON_EXECUTABLE = fs.existsSync(LOCAL_PYTHON) ? LOCAL_PYTHON : 'python3';
+const PYTHON_EXECUTABLE = ENV_PYTHON ||
+  (fs.existsSync(LOCAL_PYTHON) ? LOCAL_PYTHON : 'python3');
 const PYTHON_SCRIPT = path.join(PROJECT_ROOT, 'waste-cv-engine', 'main.py');
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB

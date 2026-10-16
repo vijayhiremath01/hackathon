@@ -1,0 +1,84 @@
+# =============================================================================
+# ReBin Root .gitignore
+# =============================================================================
+
+# --- Secrets and environment (never commit real credentials) ---
+.env
+.env.*
+!.env.example
+!.env.local.example
+*.key
+*.pem
+*.secret
+*.crt
+*.cert
+
+# --- Node.js / Frontend ---
+node_modules/
+.npm/
+.yarn/
+.next/
+frontend/.next/
+frontend/node_modules/
+*.tsbuildinfo
+
+# --- Python ---
+.venv/
+venv/
+env/
+ENV/
+**/.venv/
+**/venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.eggs/
+
+# --- Build outputs ---
+dist/
+build/
+*.egg-info/
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+*.ds_store
+
+# --- Logs and temp files ---
+*.log
+logs/
+*.tmp
+*.temp
+temp/
+uploads/
+
+# --- IDE ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# --- Coverage ---
+coverage/
+.nyc_output/
+
+# --- Local database artifacts ---
+*.db
+*.sqlite
+*.sqlite3
+db_dump*.sql
+
+# =============================================================================
+# Notes:
+# - .env.example and .env.local.example are tracked (placeholders only)
+# - models/yolo26n.pt IS tracked by git (required at runtime, 5.5MB)
+#   Do NOT add it to .gitignore unless you move it to external artifact storage.
+# - Adding a pattern to .gitignore does NOT untrack already-tracked files.
+#   If credentials were previously committed, rotate them and use
+#   `git rm --cached` to remove from tracking.
+# =============================================================================
