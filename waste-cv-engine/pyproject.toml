@@ -1,5 +1,47 @@
 [project]
 name = "waste-cv-engine"
 version = "0.1.0"
+description = "Local waste object detection engine using YOLO and OpenCV"
+readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+license = {text = "MIT"}
+authors = [
+    {name = "waste-cv-engine contributors"}
+]
+dependencies = [
+    "ultralytics>=8.4.0",
+    "torch>=2.14.0",
+    "torchvision>=0.29.0",
+    "opencv-python>=5.0.0",
+    "numpy>=2.5.0",
+    "pillow>=12.0.0",
+    "pydantic>=2.14.0",
+    "pyyaml>=6.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+]
+
+[build-system]
+requires = ["setuptools>=84.0.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+select = ["E", "F", "I", "UP", "W"]
+ignore = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

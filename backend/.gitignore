@@ -1,0 +1,13 @@
+# Node.js / Backend
+node_modules/
+dist/
+build/
+*.log
+.env
+.env.local
+temp/
+uploads/
+*.tsbuildinfo
+
+# TypeScript
+*.tsbuildinfo
