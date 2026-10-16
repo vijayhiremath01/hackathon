@@ -6,6 +6,7 @@ import multer from 'multer';
 
 import { errorHandler, notFoundHandler } from './middleware.js';
 import { initDb } from './queries.js';
+import { sql } from './db.js';
 import {
   createScan,
   listScans,
@@ -77,10 +78,32 @@ async function start(): Promise<void> {
     console.error('[db] Initialization failed (DB-dependent routes will error):', err.message);
   });
 
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, '0.0.0.0', () => {
     // eslint-disable-next-line no-console
-    console.log(`[server] Running on http://localhost:${PORT}`);
+    console.log(`[server] Running on http://0.0.0.0:${PORT}`);
   });
+
+  // Graceful shutdown: stop accepting new connections, close DB pool, exit
+  async function shutdown(signal: string): Promise<void> {
+    // eslint-disable-next-line no-console
+    console.info(`[server] Received ${signal}, shutting down gracefully...`);
+    server.close(() => {
+      // eslint-disable-next-line no-console
+      console.info('[server] HTTP server closed');
+    });
+    try {
+      await sql.end();
+      // eslint-disable-next-line no-console
+      console.info('[server] Database pool closed');
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('[db] Error closing pool:', err);
+    }
+    process.exit(0);
+  }
+
+  process.on('SIGTERM', () => void shutdown('SIGTERM'));
+  process.on('SIGINT', () => void shutdown('SIGINT'));
 }
 
 start().catch((err) => {

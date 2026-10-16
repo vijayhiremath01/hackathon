@@ -1,0 +1,42 @@
+# Docker Compose for EcoTwin Backend (local development/testing only)
+# Does NOT include frontend or PostgreSQL (Neon is external).
+#
+# Usage:
+#   cp .env.example .env   # then edit .env with your values
+#   docker compose up --build
+#
+# Environment variables are loaded from .env (docker-compose automatically
+# reads .env in the same directory). Do not commit .env.
+
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    container_name: eco-twin-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - POSTGRES_URL=${POSTGRES_URL}
+      - WASTE_CV_MODEL_PATH=/app/waste-cv-engine/models/yolo26n.pt
+      - APP_PROJECT_ROOT=/app
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      - DISABLE_WEBCAM=1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-s", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    # Temporary directory for uploads (non-persistent, cleared on container removal)
+    volumes:
+      - backend-temp:/app/backend/temp
+      - backend-logs:/app/waste-cv-engine/logs
+
+volumes:
+  backend-temp:
+  backend-logs:

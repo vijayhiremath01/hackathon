@@ -18,21 +18,30 @@ import {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Resolve paths relative to the project root (parent of backend/)
-const PROJECT_ROOT = path.resolve(__dirname, '..', '..', '..');
-const PYTHON_EXECUTABLE = path.join(
+// Resolve project root: prefer explicit env var (container-safe), fall back
+// to relative resolution from this source file (dev on host machine).
+const PROJECT_ROOT = process.env.APP_PROJECT_ROOT ||
+  path.resolve(__dirname, '..', '..', '..');
+
+// In containers, Python is available on PATH as `python3`. Locally, a
+// venv may exist; prefer it when present.
+const LOCAL_PYTHON = path.join(
   PROJECT_ROOT,
   'waste-cv-engine',
   '.venv',
   'bin',
   'python'
 );
+const PYTHON_EXECUTABLE = fs.existsSync(LOCAL_PYTHON) ? LOCAL_PYTHON : 'python3';
 const PYTHON_SCRIPT = path.join(PROJECT_ROOT, 'waste-cv-engine', 'main.py');
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 const ALLOWED_MIMETYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
 const TEMP_DIR = path.join(PROJECT_ROOT, 'backend', 'temp');
+
+// Maximum time (ms) to wait for the Python CV engine to finish inference.
+const PYTHON_ENGINE_TIMEOUT_MS = 120_000;
 
 function ensureTempDir(): void {
   if (!fs.existsSync(TEMP_DIR)) {
@@ -74,6 +83,23 @@ function runPythonEngine(imagePath: string): Promise<unknown> {
 
     let stdout = '';
     let stderr = '';
+    let timedOut = false;
+
+    // Hard timeout so a hung inference cannot block the request indefinitely.
+    const timeoutId = setTimeout(() => {
+      timedOut = true;
+      try {
+        pythonProcess.kill('SIGTERM');
+      } catch {
+        // Ignore kill errors
+      }
+      reject(
+        Object.assign(
+          new Error(`Python engine timed out after ${PYTHON_ENGINE_TIMEOUT_MS}ms`),
+          { statusCode: 504 } as ApiError
+        )
+      );
+    }, PYTHON_ENGINE_TIMEOUT_MS);
 
     pythonProcess.stdout.on('data', (data: Buffer) => {
       stdout += data.toString('utf-8');
@@ -84,12 +110,17 @@ function runPythonEngine(imagePath: string): Promise<unknown> {
     });
 
     pythonProcess.on('error', (err: Error) => {
+      clearTimeout(timeoutId);
       reject(
         Object.assign(new Error(`Failed to spawn Python engine: ${err.message}`), { statusCode: 500 } as ApiError)
       );
     });
 
     pythonProcess.on('close', (code: number | null) => {
+      clearTimeout(timeoutId);
+      if (timedOut) {
+        return; // Already rejected via timeout
+      }
       if (code !== 0) {
         reject(
           Object.assign(
